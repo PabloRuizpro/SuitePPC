@@ -1,15 +1,28 @@
-<!-- SuitePPC - Web (para usar con GitHub Pages) conectada a Apps Script -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Suite PPC</title>
   <style>
     body { font-family: sans-serif; background: #f9f9f9; padding: 20px; }
     h1 { text-align: center; color: #333; }
     .categoria { margin-top: 30px; }
-    .script { background: white; padding: 10px; margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; }
-    button { background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+    .script {
+      background: white;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
     button:hover { background: #0056b3; }
   </style>
 </head>
@@ -18,33 +31,40 @@
   <div id="contenedor"></div>
 
   <script>
-    const API_BASE = "https://script.google.com/macros/s/AKfycbwlQCQkrU-1Xu2chaXUJYBQRsQvDUcsxbvukx1VLG03TJ73kDu9IBFKzSMXwKM2sr59/exec"; // Reemplaza con tu URL de Apps Script
+    const OWNER = "pabloruizpro";
+    const REPO = "SuitePPC";
+    const BRANCH = "principal"; // O 'main' si usas main
+    const CATEGORIAS = ["automatizados", "manuales"];
 
     async function cargarScripts() {
-      const res = await fetch(API_BASE);
-      const data = await res.json();
       const contenedor = document.getElementById("contenedor");
 
-      for (const categoria in data) {
+      for (const categoria of CATEGORIAS) {
         const bloque = document.createElement("div");
         bloque.className = "categoria";
         bloque.innerHTML = `<h2>📁 ${categoria}</h2>`;
+        contenedor.appendChild(bloque);
 
-        for (const archivo in data[categoria]) {
+        const apiURL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/scripts/${categoria}?ref=${BRANCH}`;
+        const res = await fetch(apiURL);
+        const archivos = await res.json();
+
+        for (const archivo of archivos) {
           const div = document.createElement("div");
           div.className = "script";
           div.innerHTML = `
-            <span>${archivo}</span>
-            <button onclick="abrirEnColab(\"${archivo}\", \`${data[categoria][archivo]}\`)">Abrir en Colab</button>
+            <span>${archivo.name}</span>
+            <button onclick="abrirEnColab('${archivo.download_url}')">Abrir en Colab</button>
           `;
           bloque.appendChild(div);
         }
-
-        contenedor.appendChild(bloque);
       }
     }
 
-    function abrirEnColab(nombre, codigo) {
+    async function abrirEnColab(rawURL) {
+      const res = await fetch(rawURL);
+      const codigo = await res.text();
+
       const notebook = {
         nbformat: 4,
         nbformat_minor: 0,
@@ -55,16 +75,16 @@
             metadata: {},
             source: codigo.split("\n"),
             outputs: [],
-            execution_count: null
-          }
-        ]
+            execution_count: null,
+          },
+        ],
       };
 
       const blob = new Blob([JSON.stringify(notebook)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
 
       const form = document.createElement("form");
-      form.action = "https://colab.research.google.com/notebook"
+      form.action = "https://colab.research.google.com/notebook";
       form.method = "POST";
       form.target = "_blank";
 
@@ -83,4 +103,5 @@
   </script>
 </body>
 </html>
+
   
