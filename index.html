@@ -948,6 +948,100 @@ print('¡Hola mundo!')"></textarea>
 
       showMessage(message, type = 'info') {
         const container = document.getElementById('messagesContainer');
-        const messageDiv = document.
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `${type}-message`;
+        messageDiv.textContent = message;
+        
+        container.appendChild(messageDiv);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+          if (messageDiv.parentNode) {
+            messageDiv.parentNode.removeChild(messageDiv);
+          }
+        }, 5000);
+      }
+
+      showLoading(show) {
+        this.state.isLoading = show;
+        const container = document.getElementById('categoriesContainer');
+        
+        if (show) {
+          container.innerHTML = `
+            <div class="loading">
+              <div class="spinner"></div>
+              <span>Cargando...</span>
+            </div>
+          `;
+        }
+      }
+
+      // Security helper to sanitize input
+      sanitizeInput(input) {
+        const div = document.createElement('div');
+        div.textContent = input;
+        return div.innerHTML;
+      }
+
+      // Validate GitHub token format
+      isValidGitHubToken(token) {
+        return /^(ghp_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9_]{82})$/.test(token);
+      }
+
+      // Rate limiting helper
+      async waitForRateLimit() {
+        if (this.rateLimitRemaining <= 1 && Date.now() < this.rateLimitReset) {
+          const waitTime = this.rateLimitReset - Date.now();
+          this.showMessage(`Rate limit reached. Waiting ${Math.ceil(waitTime / 1000)} seconds...`, 'warning');
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
+      }
+    }
+
+    // Global app instance
+    let app;
+
+    // Initialize app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      app = new SuitePPC();
+    });
+
+    // Global functions for backward compatibility and HTML onclick handlers
+    function toggleAdminLogin() {
+      app.toggleAdminLogin();
+    }
+
+    function toggleNewScriptForm() {
+      app.toggleNewScriptForm();
+    }
+
+    function authenticateAdmin() {
+      app.authenticateAdmin();
+    }
+
+    function createScript() {
+      app.createScript();
+    }
+
+    // Service Worker for caching (optional enhancement)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(console.error);
+    }
+
+    // Error handling for unhandled promises
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('Unhandled promise rejection:', event.reason);
+      if (app) {
+        app.showMessage('An unexpected error occurred', 'error');
+      }
+    });
+
+    // Security: Prevent clickjacking
+    if (window.self !== window.top) {
+      window.top.location = window.self.location;
+    }
+  </script>
+</body>
+</html>
 
   
