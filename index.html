@@ -74,18 +74,18 @@
         bloque.innerHTML = `<h2>📁 ${categoria}</h2>`;
         contenedor.appendChild(bloque);
 
-        const apiURL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/scripts/${categoria}?ref=${BRANCH}`;
+        const apiURL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/scripts/${categoria}?ref=${BRANCH}&ts=${Date.now()}`;
         let archivos = [];
-try {
-  const res = await fetch(apiURL + "&ts=" + Date.now()); // evitar caché
-  if (!res.ok) throw new Error("Error al cargar " + categoria);
-  archivos = await res.json();
-} catch (err) {
-  console.warn("Fallo al cargar carpeta:", categoria, err.message);
-  archivos = [];
-}
 
-        const archivos = await res.json();
+        try {
+          const headers = githubToken ? { Authorization: `Bearer ${githubToken}` } : {};
+          const res = await fetch(apiURL, { headers });
+          if (!res.ok) throw new Error("Error al cargar " + categoria);
+          archivos = await res.json();
+        } catch (err) {
+          console.warn("Fallo al cargar carpeta:", categoria, err.message);
+          archivos = [];
+        }
 
         for (const archivo of archivos) {
           const div = document.createElement("div");
@@ -107,15 +107,13 @@ try {
         nbformat: 4,
         nbformat_minor: 0,
         metadata: {},
-        cells: [
-          {
-            cell_type: "code",
-            metadata: {},
-            source: codigo.split("\n"),
-            outputs: [],
-            execution_count: null,
-          },
-        ],
+        cells: [{
+          cell_type: "code",
+          metadata: {},
+          source: codigo.split("\n"),
+          outputs: [],
+          execution_count: null,
+        }],
       };
 
       const blob = new Blob([JSON.stringify(notebook)], { type: "application/json" });
@@ -199,6 +197,7 @@ try {
   </script>
 </body>
 </html>
+
 
 
   
