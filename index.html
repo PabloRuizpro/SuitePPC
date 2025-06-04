@@ -571,11 +571,6 @@ print('¡Hola mundo!')"></textarea>
 
       async makeRequest(url, options = {}) {
         try {
-          // Check rate limit
-          if (this.rateLimitRemaining <= 1 && Date.now() < this.rateLimitReset) {
-            throw new Error('Rate limit exceeded. Please wait before making more requests.');
-          }
-
           const headers = {
             'Accept': 'application/vnd.github.v3+json',
             'User-Agent': 'SuitePPC/1.0',
@@ -610,15 +605,6 @@ print('¡Hola mundo!')"></textarea>
       async loadCategories() {
         this.showLoading(true);
         try {
-          const cacheKey = 'categories';
-          const cached = this.cache.get(cacheKey);
-          
-          if (cached && Date.now() - cached.timestamp < 60000) {
-            this.state.categories = cached.data;
-            this.renderCategories();
-            return;
-          }
-
           const url = `${this.config.apiBase}/repos/${this.config.owner}/${this.config.repo}/contents/scripts`;
           const contents = await this.makeRequest(url);
           
@@ -627,13 +613,21 @@ print('¡Hola mundo!')"></textarea>
             .map(item => item.name);
 
           this.state.categories = categories;
-          this.cache.set(cacheKey, { data: categories, timestamp: Date.now() });
           
           await this.loadScriptsForCategories();
           this.updateCategorySelect();
           this.renderCategories();
         } catch (error) {
-          this.showMessage(`Error loading categories: ${error.message}`, 'error');
+          console.error('Error loading categories:', error);
+          this.showMessage(`Error cargando categorías: ${error.message}`, 'error');
+          // Show empty state instead of leaving loading
+          document.getElementById('categoriesContainer').innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">⚠️</div>
+              <p>Error al cargar las categorías</p>
+              <button class="btn btn-primary" onclick="app.loadCategories()">🔄 Reintentar</button>
+            </div>
+          `;
         } finally {
           this.showLoading(false);
         }
@@ -729,44 +723,60 @@ print('¡Hola mundo!')"></textarea>
           const response = await fetch(downloadUrl);
           const code = await response.text();
 
+          // Create a proper Jupyter notebook structure
           const notebook = {
             nbformat: 4,
-            nbformat_minor: 0,
+            nbformat_minor: 2,
             metadata: {
               colab: {
                 name: fileName,
-                provenance: []
+                provenance: [],
+                collapsed_sections: []
               },
               kernelspec: {
                 name: "python3",
                 display_name: "Python 3"
+              },
+              language_info: {
+                name: "python"
               }
             },
             cells: [{
               cell_type: "code",
+              execution_count: null,
               metadata: {},
-              source: code.split('\n'),
               outputs: [],
-              execution_count: null
+              source: code.split('\n').map(line => line + '\n')
             }]
           };
 
+          // Convert to blob and create download link
           const blob = new Blob([JSON.stringify(notebook, null, 2)], { 
-            type: 'application/json' 
+            type: 'application/x-ipynb+json' 
           });
           
+          // Create a temporary download link
           const url = URL.createObjectURL(blob);
           const link = document.createElement('a');
-          link.href = `https://colab.research.google.com/notebook#fileId=${url}`;
-          link.target = '_blank';
+          link.href = url;
+          link.download = fileName.replace('.py', '.ipynb');
+          link.style.display = 'none';
+          
+          document.body.appendChild(link);
           link.click();
+          document.body.removeChild(link);
+          
+          // Open Colab with the file
+          const colabUrl = 'https://colab.research.google.com/notebook#create=true&language=python3';
+          window.open(colabUrl, '_blank');
           
           // Clean up
           setTimeout(() => URL.revokeObjectURL(url), 1000);
           
-          this.showMessage(`Script "${fileName}" abierto en Google Colab`, 'success');
+          this.showMessage(`Notebook "${fileName}" preparado. Subir el archivo descargado a Colab.`, 'success');
         } catch (error) {
-          this.showMessage(`Error opening script: ${error.message}`, 'error');
+          console.error('Error opening in Colab:', error);
+          this.showMessage(`Error abriendo en Colab: ${error.message}`, 'error');
         } finally {
           this.showLoading(false);
         }
@@ -776,35 +786,34 @@ print('¡Hola mundo!')"></textarea>
         const token = document.getElementById('tokenInput').value.trim();
         
         if (!token) {
-          this.showMessage('Please enter a GitHub token', 'error');
+          this.showMessage('Por favor introduce un token de GitHub', 'error');
           return;
         }
 
         if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
-          this.showMessage('Invalid token format. GitHub tokens should start with "ghp_" or "github_pat_"', 'error');
+          this.showMessage('Formato de token inválido. Los tokens de GitHub deben empezar con "ghp_" o "github_pat_"', 'error');
           return;
         }
 
         try {
           this.showLoading(true);
           
-          // Test token by making a simple API call
-          const testUrl = `${this.config.apiBase}/user`;
-          await this.makeRequest(testUrl, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-
           this.state.token = token;
+          
+          // Test token by loading categories
+          await this.loadCategories();
+
           this.state.isAuthenticated = true;
           this.updateUI();
           this.toggleForm('loginForm', false);
           
-          this.showMessage('Successfully authenticated as admin', 'success');
+          this.showMessage('Autenticación exitosa', 'success');
           
           // Clear the input for security
           document.getElementById('tokenInput').value = '';
         } catch (error) {
-          this.showMessage(`Authentication failed: ${error.message}`, 'error');
+          this.state.token = null;
+          this.showMessage(`Error de autenticación: ${error.message}`, 'error');
         } finally {
           this.showLoading(false);
         }
@@ -880,9 +889,11 @@ print('¡Hola mundo!')"></textarea>
           
           this.toggleForm('newScriptForm', false);
           
-          // Refresh categories
+          // Refresh categories after creating script
           this.cache.clear();
-          await this.loadCategories();
+          setTimeout(() => {
+            this.loadCategories();
+          }, 1000); // Wait a moment for GitHub to process
           
         } catch (error) {
           this.showMessage(`Error creating script: ${error.message}`, 'error');
@@ -964,9 +975,9 @@ print('¡Hola mundo!')"></textarea>
 
       showLoading(show) {
         this.state.isLoading = show;
-        const container = document.getElementById('categoriesContainer');
         
         if (show) {
+          const container = document.getElementById('categoriesContainer');
           container.innerHTML = `
             <div class="loading">
               <div class="spinner"></div>
