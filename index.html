@@ -1,16 +1,16 @@
-<!-- SuitePPC - Frontend Web (GitHub Pages, Netlify, o tu propio host) -->
+<!-- SuitePPC - Web (para usar con GitHub Pages) conectada a Apps Script -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Suite PPC - Panel</title>
+  <title>Suite PPC</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-    h1 { color: #333; text-align: center; }
+    body { font-family: sans-serif; background: #f9f9f9; padding: 20px; }
+    h1 { text-align: center; color: #333; }
     .categoria { margin-top: 30px; }
-    .script { background: white; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-    button { background-color: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-    button:hover { background-color: #0056b3; }
+    .script { background: white; padding: 10px; margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; }
+    button { background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #0056b3; }
   </style>
 </head>
 <body>
@@ -18,40 +18,69 @@
   <div id="contenedor"></div>
 
   <script>
-    const API_BASE = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+    const API_BASE = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // Reemplaza con tu URL de Apps Script
 
     async function cargarScripts() {
       const res = await fetch(API_BASE);
       const data = await res.json();
       const contenedor = document.getElementById("contenedor");
-      contenedor.innerHTML = "";
 
       for (const categoria in data) {
         const bloque = document.createElement("div");
         bloque.className = "categoria";
         bloque.innerHTML = `<h2>📁 ${categoria}</h2>`;
 
-        data[categoria].forEach(nombre => {
+        for (const archivo in data[categoria]) {
           const div = document.createElement("div");
           div.className = "script";
           div.innerHTML = `
-            <span>${nombre}</span>
-            <button onclick="ejecutar('${categoria}', '${nombre}')">Ejecutar</button>
+            <span>${archivo}</span>
+            <button onclick="abrirEnColab(\"${archivo}\", \`${data[categoria][archivo]}\`)">Abrir en Colab</button>
           `;
           bloque.appendChild(div);
-        });
+        }
 
         contenedor.appendChild(bloque);
       }
     }
 
-    async function ejecutar(categoria, archivo) {
-      const res = await fetch(`${API_BASE}?action=ejecutar&categoria=${categoria}&archivo=${archivo}`);
-      const salida = await res.text();
-      alert(salida);
+    function abrirEnColab(nombre, codigo) {
+      const notebook = {
+        nbformat: 4,
+        nbformat_minor: 0,
+        metadata: {},
+        cells: [
+          {
+            cell_type: "code",
+            metadata: {},
+            source: codigo.split("\n"),
+            outputs: [],
+            execution_count: null
+          }
+        ]
+      };
+
+      const blob = new Blob([JSON.stringify(notebook)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+
+      const form = document.createElement("form");
+      form.action = "https://colab.research.google.com/notebook"
+      form.method = "POST";
+      form.target = "_blank";
+
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "file";
+      input.value = url;
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
     }
 
     cargarScripts();
   </script>
 </body>
 </html>
+  
