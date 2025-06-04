@@ -2,952 +2,201 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Suite PPC - Gestión de scripts de Python con integración GitHub">
-  <title>Suite PPC - Gestión de Scripts</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>Suite PPC</title>
   <style>
-    :root {
-      --primary-color: #2563eb;
-      --primary-hover: #1d4ed8;
-      --secondary-color: #64748b;
-      --success-color: #10b981;
-      --danger-color: #ef4444;
-      --warning-color: #f59e0b;
-      --background: #0f172a;
-      --surface: #1e293b;
-      --surface-hover: #334155;
-      --text-primary: #f8fafc;
-      --text-secondary: #cbd5e1;
-      --border: #334155;
-      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --border-radius: 12px;
-      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--background);
-      color: var(--text-primary);
-      line-height: 1.6;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 3rem;
-      position: relative;
-    }
-
-    .header::before {
-      content: '';
-      position: absolute;
-      top: -50px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
-      height: 200px;
-      background: var(--gradient);
-      border-radius: 50%;
-      opacity: 0.1;
-      filter: blur(40px);
-      z-index: -1;
-    }
-
-    .header h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      background: var(--gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.5rem;
-    }
-
-    .header p {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .admin-bar {
+    body { font-family: sans-serif; background: #f9f9f9; padding: 20px; }
+    h1 { text-align: center; color: #333; }
+    .categoria { margin-top: 30px; }
+    .script {
+      background: white;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
       display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
+      justify-content: space-between;
     }
-
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--surface);
-      padding: 0.5rem 1rem;
-      border-radius: var(--border-radius);
-      border: 1px solid var(--border);
-      font-size: 0.875rem;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--danger-color);
-      animation: pulse 2s infinite;
-    }
-
-    .status-dot.authenticated {
-      background: var(--success-color);
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
+    button {
+      background: #007bff;
+      color: white;
       border: none;
-      border-radius: var(--border-radius);
-      font-size: 0.875rem;
-      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 4px;
       cursor: pointer;
-      transition: var(--transition);
-      text-decoration: none;
-      position: relative;
-      overflow: hidden;
     }
-
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      transition: left 0.5s;
-    }
-
-    .btn:hover::before {
-      left: 100%;
-    }
-
-    .btn-primary {
-      background: var(--primary-color);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-hover);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn-secondary {
-      background: var(--surface);
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: var(--surface-hover);
-      transform: translateY(-2px);
-    }
-
-    .btn-success {
-      background: var(--success-color);
-      color: white;
-    }
-
-    .btn-success:hover {
-      background: #059669;
-      transform: translateY(-2px);
-    }
-
-    .form-container {
-      background: var(--surface);
-      border-radius: var(--border-radius);
-      padding: 2rem;
-      margin-bottom: 2rem;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      display: none;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    .form-container.show {
-      display: block;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-
-    .form-input,
-    .form-select,
-    .form-textarea {
-      width: 100%;
-      padding: 0.75rem;
-      background: var(--background);
-      border: 1px solid var(--border);
-      border-radius: var(--border-radius);
-      color: var(--text-primary);
-      font-size: 0.875rem;
-      transition: var(--transition);
-    }
-
-    .form-input:focus,
-    .form-select:focus,
-    .form-textarea:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .form-textarea {
-      resize: vertical;
-      min-height: 120px;
-      font-family: 'Fira Code', monospace;
-    }
-
-    .categories-grid {
-      display: grid;
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .category-section {
-      background: var(--surface);
-      border-radius: var(--border-radius);
-      padding: 2rem;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-    }
-
-    .category-section:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .category-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .category-title {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .category-icon {
-      font-size: 1.5rem;
-    }
-
-    .script-count {
-      background: var(--primary-color);
-      color: white;
-      padding: 0.25rem 0.75rem;
-      border-radius: 2rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-
-    .scripts-list {
-      display: grid;
-      gap: 1rem;
-    }
-
-    .script-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem;
-      background: var(--background);
-      border-radius: var(--border-radius);
-      border: 1px solid var(--border);
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .script-item::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 4px;
-      height: 100%;
-      background: var(--primary-color);
-      transform: scaleY(0);
-      transition: var(--transition);
-    }
-
-    .script-item:hover {
-      background: var(--surface-hover);
-      transform: translateX(8px);
-    }
-
-    .script-item:hover::before {
-      transform: scaleY(1);
-    }
-
-    .script-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .script-icon {
-      font-size: 1.25rem;
-      opacity: 0.7;
-    }
-
-    .script-name {
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-
-    .loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 3rem;
-      color: var(--text-secondary);
-    }
-
-    .spinner {
-      width: 24px;
-      height: 24px;
-      border: 2px solid var(--border);
-      border-top: 2px solid var(--primary-color);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-right: 0.5rem;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .error-message {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid var(--danger-color);
-      color: var(--danger-color);
-      padding: 1rem;
-      border-radius: var(--border-radius);
-      margin: 1rem 0;
-    }
-
-    .success-message {
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid var(--success-color);
-      color: var(--success-color);
-      padding: 1rem;
-      border-radius: var(--border-radius);
-      margin: 1rem 0;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-secondary);
-    }
-
-    .empty-state-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      opacity: 0.3;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        padding: 1rem;
-      }
-      
-      .header h1 {
-        font-size: 2rem;
-      }
-      
-      .admin-bar {
-        justify-content: center;
-      }
-      
-      .script-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-      }
-      
-      .btn {
-        width: 100%;
-        justify-content: center;
-      }
-    }
-
-    /* Security indicator */
-    .security-badge {
-      position: fixed;
-      bottom: 1rem;
-      right: 1rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--border-radius);
-      padding: 0.5rem;
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      z-index: 1000;
-    }
+    button:hover { background: #0056b3; }
+    #nuevoForm { background: #fff; padding: 15px; margin-top: 30px; border-radius: 5px; }
+    textarea, input, select { width: 100%; margin: 5px 0 15px; padding: 8px; }
+    #adminBar { text-align: right; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <h1>Suite PPC</h1>
-      <p>Gestión inteligente de scripts de Python con integración completa de GitHub</p>
-    </header>
+  <h1>Suite PPC</h1>
 
-    <div class="admin-bar">
-      <div class="status-indicator">
-        <div class="status-dot" id="statusDot"></div>
-        <span id="statusText">Desconectado</span>
-      </div>
-      <button class="btn btn-secondary" onclick="toggleAdminLogin()" id="loginBtn">
-        🔐 Iniciar sesión
-      </button>
-      <button class="btn btn-primary" onclick="toggleNewScriptForm()" id="newScriptBtn">
-        ➕ Nuevo Script
-      </button>
-    </div>
-
-    <div class="form-container" id="loginForm">
-      <h3>🔐 Autenticación de Administrador</h3>
-      <div class="form-group">
-        <label class="form-label">GitHub Personal Access Token:</label>
-        <input type="password" class="form-input" id="tokenInput" placeholder="ghp_...">
-        <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block;">
-          Necesario para crear y modificar scripts. <a href="https://github.com/settings/tokens" target="_blank" style="color: var(--primary-color);">Generar token</a>
-        </small>
-      </div>
-      <button class="btn btn-success" onclick="authenticateAdmin()">
-        ✅ Autenticar
-      </button>
-    </div>
-
-    <div class="form-container" id="newScriptForm">
-      <h3>➕ Crear Nuevo Script</h3>
-      <div class="form-group">
-        <label class="form-label">Nombre del archivo:</label>
-        <input type="text" class="form-input" id="scriptName" placeholder="mi_script.py">
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label">Categoría:</label>
-        <select class="form-select" id="scriptCategory">
-          <option value="">Seleccionar categoría...</option>
-          <option value="__nueva__">➕ Crear nueva categoría</option>
-        </select>
-      </div>
-      
-      <div class="form-group" id="newCategoryGroup" style="display: none;">
-        <label class="form-label">Nueva categoría:</label>
-        <input type="text" class="form-input" id="newCategoryName" placeholder="nombre_categoria">
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label">Código Python:</label>
-        <textarea class="form-textarea" id="scriptCode" rows="10" placeholder="# Escribe tu código aquí
-print('¡Hola mundo!')"></textarea>
-      </div>
-      
-      <button class="btn btn-success" onclick="createScript()">
-        📤 Crear Script
-      </button>
-    </div>
-
-    <div id="messagesContainer"></div>
-    <div id="categoriesContainer" class="categories-grid"></div>
+  <div id="adminBar">
+    <button onclick="iniciarSesionAdmin()">🔐 Iniciar sesión como admin</button>
+    <button onclick="mostrarFormularioNuevoScript()">➕ Nuevo Script</button>
   </div>
 
-  <div class="security-badge">
-    🔒 Conexión segura HTTPS
+  <div id="nuevoForm" style="display:none">
+    <h3>Nuevo Script</h3>
+    <label>Nombre del archivo (con .py):</label>
+    <input id="nuevoNombre" />
+
+    <label>Carpeta destino:</label>
+    <select id="nuevaCategoria">
+      <option value="automatizados">automatizados</option>
+      <option value="manuales">manuales</option>
+      <option value="__nueva__">-- Crear nueva carpeta --</option>
+    </select>
+    <input id="nuevaCategoriaPersonalizada" placeholder="Nombre nueva carpeta..." style="display:none" />
+
+    <label>Código:</label>
+    <textarea id="nuevoCodigo" rows="6">print('Hola mundo')</textarea>
+    <button onclick="crearNuevoScript()">📤 Subir a GitHub</button>
   </div>
+
+  <div id="contenedor"></div>
 
   <script>
-    class SuitePPC {
-      constructor() {
-        this.config = {
-          owner: 'pabloruizpro',
-          repo: 'SuitePPC',
-          branch: 'principal',
-          apiBase: 'https://api.github.com'
-        };
-        
-        this.state = {
-          token: null,
-          categories: [],
-          isAuthenticated: false,
-          isLoading: false
-        };
+    const OWNER = "pabloruizpro";
+    const REPO = "SuitePPC";
+    const BRANCH = "principal";
+    const CATEGORIAS = ["automatizados", "manuales"];
+    let githubToken = null;
 
-        this.cache = new Map();
-        this.rateLimitRemaining = 60;
-        this.rateLimitReset = Date.now();
-        
-        this.init();
-      }
+    async function cargarScripts() {
+      const contenedor = document.getElementById("contenedor");
+      contenedor.innerHTML = "";
 
-      init() {
-        this.updateUI();
-        this.loadCategories();
-        this.setupEventListeners();
-      }
+      for (const categoria of CATEGORIAS) {
+        const bloque = document.createElement("div");
+        bloque.className = "categoria";
+        bloque.innerHTML = `<h2>📁 ${categoria}</h2>`;
+        contenedor.appendChild(bloque);
 
-      setupEventListeners() {
-        document.getElementById('scriptCategory').addEventListener('change', (e) => {
-          const newCategoryGroup = document.getElementById('newCategoryGroup');
-          newCategoryGroup.style.display = e.target.value === '__nueva__' ? 'block' : 'none';
-        });
+        const apiURL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/scripts/${categoria}?ref=${BRANCH}&ts=${Date.now()}`;
+        let archivos = [];
 
-        // Input validation
-        document.getElementById('scriptName').addEventListener('input', (e) => {
-          let value = e.target.value;
-          if (value && !value.endsWith('.py')) {
-            value += '.py';
-          }
-          e.target.value = value;
-        });
-      }
-
-      async makeRequest(url, options = {}) {
         try {
-          // Check rate limit
-          if (this.rateLimitRemaining <= 1 && Date.now() < this.rateLimitReset) {
-            throw new Error('Rate limit exceeded. Please wait before making more requests.');
-          }
-
-          const headers = {
-            'Accept': 'application/vnd.github.v3+json',
-            'User-Agent': 'SuitePPC/1.0',
-            ...options.headers
-          };
-
-          if (this.state.token) {
-            headers['Authorization'] = `Bearer ${this.state.token}`;
-          }
-
-          const response = await fetch(url, {
-            ...options,
-            headers
-          });
-
-          // Update rate limit info
-          this.rateLimitRemaining = parseInt(response.headers.get('X-RateLimit-Remaining') || '60');
-          this.rateLimitReset = parseInt(response.headers.get('X-RateLimit-Reset') || '0') * 1000;
-
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
-          }
-
-          return await response.json();
-        } catch (error) {
-          console.error('API Request failed:', error);
-          throw error;
+          const headers = githubToken ? { Authorization: `Bearer ${githubToken}` } : {};
+          const res = await fetch(apiURL, { headers });
+          if (!res.ok) throw new Error("Error al cargar " + categoria);
+          archivos = await res.json();
+        } catch (err) {
+          console.warn("Fallo al cargar carpeta:", categoria, err.message);
+          archivos = [];
         }
-      }
 
-      async loadCategories() {
-        this.showLoading(true);
-        try {
-          const cacheKey = 'categories';
-          const cached = this.cache.get(cacheKey);
-          
-          if (cached && Date.now() - cached.timestamp < 60000) {
-            this.state.categories = cached.data;
-            this.renderCategories();
-            return;
-          }
-
-          const url = `${this.config.apiBase}/repos/${this.config.owner}/${this.config.repo}/contents/scripts`;
-          const contents = await this.makeRequest(url);
-          
-          const categories = contents
-            .filter(item => item.type === 'dir')
-            .map(item => item.name);
-
-          this.state.categories = categories;
-          this.cache.set(cacheKey, { data: categories, timestamp: Date.now() });
-          
-          await this.loadScriptsForCategories();
-          this.updateCategorySelect();
-          this.renderCategories();
-        } catch (error) {
-          this.showMessage(`Error loading categories: ${error.message}`, 'error');
-        } finally {
-          this.showLoading(false);
-        }
-      }
-
-      async loadScriptsForCategories() {
-        const scriptsPromises = this.state.categories.map(async (category) => {
-          try {
-            const url = `${this.config.apiBase}/repos/${this.config.owner}/${this.config.repo}/contents/scripts/${category}`;
-            const scripts = await this.makeRequest(url);
-            return {
-              category,
-              scripts: scripts.filter(item => item.type === 'file' && item.name.endsWith('.py'))
-            };
-          } catch (error) {
-            console.warn(`Failed to load scripts for category ${category}:`, error);
-            return { category, scripts: [] };
-          }
-        });
-
-        this.categoryScripts = await Promise.all(scriptsPromises);
-      }
-
-      updateCategorySelect() {
-        const select = document.getElementById('scriptCategory');
-        const currentValue = select.value;
-        
-        // Clear existing options except first two
-        while (select.options.length > 2) {
-          select.removeChild(select.lastChild);
-        }
-        
-        // Add category options
-        this.state.categories.forEach(category => {
-          const option = document.createElement('option');
-          option.value = category;
-          option.textContent = `📁 ${category}`;
-          select.appendChild(option);
-        });
-        
-        // Restore selection if possible
-        if (currentValue && [...select.options].some(opt => opt.value === currentValue)) {
-          select.value = currentValue;
-        }
-      }
-
-      renderCategories() {
-        const container = document.getElementById('categoriesContainer');
-        
-        if (!this.categoryScripts || this.categoryScripts.length === 0) {
-          container.innerHTML = `
-            <div class="empty-state">
-              <div class="empty-state-icon">📁</div>
-              <p>No se encontraron categorías de scripts</p>
-            </div>
+        for (const archivo of archivos) {
+          const div = document.createElement("div");
+          div.className = "script";
+          div.innerHTML = `
+            <span>${archivo.name}</span>
+            <button onclick="abrirEnColab('${archivo.download_url}')">Abrir en Colab</button>
           `;
-          return;
-        }
-
-        container.innerHTML = this.categoryScripts.map(({ category, scripts }) => `
-          <div class="category-section">
-            <div class="category-header">
-              <div class="category-title">
-                <span class="category-icon">📁</span>
-                <span>${category}</span>
-              </div>
-              <span class="script-count">${scripts.length}</span>
-            </div>
-            <div class="scripts-list">
-              ${scripts.length > 0 ? scripts.map(script => `
-                <div class="script-item">
-                  <div class="script-info">
-                    <span class="script-icon">🐍</span>
-                    <span class="script-name">${script.name}</span>
-                  </div>
-                  <button class="btn btn-primary" onclick="app.openInColab('${script.download_url}', '${script.name}')">
-                    🚀 Abrir en Colab
-                  </button>
-                </div>
-              `).join('') : `
-                <div class="empty-state">
-                  <p style="margin: 0; font-size: 0.875rem;">No hay scripts en esta categoría</p>
-                </div>
-              `}
-            </div>
-          </div>
-        `).join('');
-      }
-
-      async openInColab(downloadUrl, fileName) {
-        try {
-          this.showLoading(true);
-          const response = await fetch(downloadUrl);
-          const code = await response.text();
-
-          const notebook = {
-            nbformat: 4,
-            nbformat_minor: 0,
-            metadata: {
-              colab: {
-                name: fileName,
-                provenance: []
-              },
-              kernelspec: {
-                name: "python3",
-                display_name: "Python 3"
-              }
-            },
-            cells: [{
-              cell_type: "code",
-              metadata: {},
-              source: code.split('\n'),
-              outputs: [],
-              execution_count: null
-            }]
-          };
-
-          const blob = new Blob([JSON.stringify(notebook, null, 2)], { 
-            type: 'application/json' 
-          });
-          
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = `https://colab.research.google.com/notebook#fileId=${url}`;
-          link.target = '_blank';
-          link.click();
-          
-          // Clean up
-          setTimeout(() => URL.revokeObjectURL(url), 1000);
-          
-          this.showMessage(`Script "${fileName}" abierto en Google Colab`, 'success');
-        } catch (error) {
-          this.showMessage(`Error opening script: ${error.message}`, 'error');
-        } finally {
-          this.showLoading(false);
+          bloque.appendChild(div);
         }
       }
+    }
 
-      async authenticateAdmin() {
-        const token = document.getElementById('tokenInput').value.trim();
-        
-        if (!token) {
-          this.showMessage('Please enter a GitHub token', 'error');
-          return;
-        }
+    async function abrirEnColab(rawURL) {
+      const res = await fetch(rawURL);
+      const codigo = await res.text();
 
-        if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
-          this.showMessage('Invalid token format. GitHub tokens should start with "ghp_" or "github_pat_"', 'error');
-          return;
-        }
+      const notebook = {
+        nbformat: 4,
+        nbformat_minor: 0,
+        metadata: {},
+        cells: [{
+          cell_type: "code",
+          metadata: {},
+          source: codigo.split("\n"),
+          outputs: [],
+          execution_count: null,
+        }],
+      };
 
-        try {
-          this.showLoading(true);
-          
-          // Test token by making a simple API call
-          const testUrl = `${this.config.apiBase}/user`;
-          await this.makeRequest(testUrl, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
+      const blob = new Blob([JSON.stringify(notebook)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
 
-          this.state.token = token;
-          this.state.isAuthenticated = true;
-          this.updateUI();
-          this.toggleForm('loginForm', false);
-          
-          this.showMessage('Successfully authenticated as admin', 'success');
-          
-          // Clear the input for security
-          document.getElementById('tokenInput').value = '';
-        } catch (error) {
-          this.showMessage(`Authentication failed: ${error.message}`, 'error');
-        } finally {
-          this.showLoading(false);
-        }
+      const form = document.createElement("form");
+      form.action = "https://colab.research.google.com/notebook";
+      form.method = "POST";
+      form.target = "_blank";
+
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "file";
+      input.value = url;
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
+    }
+
+    function iniciarSesionAdmin() {
+      const token = prompt("Introduce tu GitHub Token:");
+      if (token && token.length > 30) {
+        githubToken = token;
+        alert("Sesión iniciada. Ya puedes subir nuevos scripts.");
+      }
+    }
+
+    function mostrarFormularioNuevoScript() {
+      document.getElementById("nuevoForm").style.display = "block";
+    }
+
+    document.getElementById("nuevaCategoria").addEventListener("change", function () {
+      const personalizada = document.getElementById("nuevaCategoriaPersonalizada");
+      personalizada.style.display = this.value === "__nueva__" ? "block" : "none";
+    });
+
+    async function crearNuevoScript() {
+      if (!githubToken) return alert("Primero debes iniciar sesión como admin.");
+
+      const nombre = document.getElementById("nuevoNombre").value.trim();
+      const codigo = document.getElementById("nuevoCodigo").value;
+      let categoria = document.getElementById("nuevaCategoria").value;
+
+      if (categoria === "__nueva__") {
+        categoria = document.getElementById("nuevaCategoriaPersonalizada").value.trim();
+        if (!categoria) return alert("Debes introducir el nombre de la nueva carpeta.");
+        if (!CATEGORIAS.includes(categoria)) CATEGORIAS.push(categoria);
       }
 
-      async createScript() {
-        if (!this.state.isAuthenticated) {
-          this.showMessage('Please authenticate first', 'error');
-          return;
-        }
+      const path = `scripts/${categoria}/${nombre}`;
+      const apiURL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
+      const contentEncoded = btoa(unescape(encodeURIComponent(codigo)));
 
-        const name = document.getElementById('scriptName').value.trim();
-        const code = document.getElementById('scriptCode').value.trim();
-        let category = document.getElementById('scriptCategory').value;
+      const body = {
+        message: `Añadir nuevo script: ${nombre}`,
+        content: contentEncoded,
+        branch: BRANCH,
+      };
 
-        if (!name) {
-          this.showMessage('Please enter a script name', 'error');
-          return;
-        }
+      const res = await fetch(apiURL, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${githubToken}`,
+          "Accept": "application/vnd.github.v3+json",
+        },
+        body: JSON.stringify(body),
+      });
 
-        if (!name.endsWith('.py')) {
-          this.showMessage('Script name must end with .py', 'error');
-          return;
-        }
-
-        if (!code) {
-          this.showMessage('Please enter some code', 'error');
-          return;
-        }
-
-        if (category === '__nueva__') {
-          const newCategory = document.getElementById('newCategoryName').value.trim();
-          if (!newCategory) {
-            this.showMessage('Please enter a new category name', 'error');
-            return;
-          }
-          category = newCategory;
-        }
-
-        if (!category) {
-          this.showMessage('Please select or create a category', 'error');
-          return;
-        }
-
-        try {
-          this.showLoading(true);
-          
-          const path = `scripts/${category}/${name}`;
-          const url = `${this.config.apiBase}/repos/${this.config.owner}/${this.config.repo}/contents/${path}`;
-          
-          const content = btoa(unescape(encodeURIComponent(code)));
-          
-          await this.makeRequest(url, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              message: `Add new script: ${name}`,
-              content: content,
-              branch: this.config.branch
-            })
-          });
-
-          this.showMessage(`Script "${name}" created successfully`, 'success');
-          
-          // Reset form
-          document.getElementById('scriptName').value = '';
-          document.getElementById('scriptCode').value = '';
-          document.getElementById('scriptCategory').value = '';
-          document.getElementById('newCategoryName').value = '';
-          document.getElementById('newCategoryGroup').style.display = 'none';
-          
-          this.toggleForm('newScriptForm', false);
-          
-          // Refresh categories
-          this.cache.clear();
-          await this.loadCategories();
-          
-        } catch (error) {
-          this.showMessage(`Error creating script: ${error.message}`, 'error');
-        } finally {
-          this.showLoading(false);
-        }
+      if (res.ok) {
+        alert("Script subido con éxito.");
+        cargarScripts();
+      } else {
+        const json = await res.json();
+        alert("Error: " + json.message);
       }
+    }
 
-      toggleForm(formId, show = null) {
-        const form = document.getElementById(formId);
-        const isVisible = form.classList.contains('show');
-        
-        if (show === null) {
-          show = !isVisible;
-        }
-        
-        if (show) {
-          form.classList.add('show');
-        } else {
-          form.classList.remove('show');
-        }
-      }
+    cargarScripts();
+  </script>
+</body>
+</html>
 
-      updateUI() {
-        const statusDot = document.getElementById('statusDot');
-        const statusText = document.getElementById('statusText');
-        const loginBtn = document.getElementById('loginBtn');
-
-        if (this.state.isAuthenticated) {
-          statusDot.classList.add('authenticated');
-          statusText.textContent = 'Autenticado';
-          loginBtn.innerHTML = '🚪 Cerrar sesión';
-          loginBtn.onclick = () => this.logout();
-        } else {
-          statusDot.classList.remove('authenticated');
-          statusText.textContent = 'Desconectado';
-          loginBtn.innerHTML = '🔐 Iniciar sesión';
-          loginBtn.onclick = () => this.toggleAdminLogin();
-        }
-      }
-
-      logout() {
-        this.state.token = null;
-        this.state.isAuthenticated = false;
-        this.updateUI();
-        this.toggleForm('loginForm', false);
-        this.toggleForm('newScriptForm', false);
-        this.showMessage('Logged out successfully', 'success');
-      }
-
-      toggleAdminLogin() {
-        this.toggleForm('loginForm');
-      }
-
-      toggleNewScriptForm() {
-        if (!this.state.isAuthenticated) {
-          this.showMessage('Please authenticate first', 'error');
-          this.toggleForm('loginForm', true);
-          return;
-        }
-        this.toggleForm('newScriptForm');
-      }
-
-      showMessage(message, type = 'info') {
-        const container = document.getElementById('messagesContainer');
-        const messageDiv = document.
 
   
