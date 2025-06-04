@@ -75,7 +75,16 @@
         contenedor.appendChild(bloque);
 
         const apiURL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/scripts/${categoria}?ref=${BRANCH}`;
-        const res = await fetch(apiURL);
+        let archivos = [];
+try {
+  const res = await fetch(apiURL + "&ts=" + Date.now()); // evitar caché
+  if (!res.ok) throw new Error("Error al cargar " + categoria);
+  archivos = await res.json();
+} catch (err) {
+  console.warn("Fallo al cargar carpeta:", categoria, err.message);
+  archivos = [];
+}
+
         const archivos = await res.json();
 
         for (const archivo of archivos) {
