@@ -723,54 +723,20 @@ print('¡Hola mundo!')"></textarea>
         `).join('');
       }
 
-      async openInColab(downloadUrl, fileName) {
-        try {
-          this.showLoading(true);
-          const response = await fetch(downloadUrl);
-          const code = await response.text();
+async openInColab(downloadUrl, fileName) {
+  try {
+    // Convertir la URL raw en URL para Colab
+    const githubPath = downloadUrl
+      .replace("https://raw.githubusercontent.com/", "")
+      .replace("/main/", "/blob/main/");
 
-          const notebook = {
-            nbformat: 4,
-            nbformat_minor: 0,
-            metadata: {
-              colab: {
-                name: fileName,
-                provenance: []
-              },
-              kernelspec: {
-                name: "python3",
-                display_name: "Python 3"
-              }
-            },
-            cells: [{
-              cell_type: "code",
-              metadata: {},
-              source: code.split('\n'),
-              outputs: [],
-              execution_count: null
-            }]
-          };
+    const colabUrl = `https://colab.research.google.com/github/${githubPath}`;
+    window.open(colabUrl, "_blank");
+  } catch (error) {
+    this.showMessage(`Error abriendo en Colab: ${error.message}`, "error");
+  }
+}
 
-          const blob = new Blob([JSON.stringify(notebook, null, 2)], { 
-            type: 'application/json' 
-          });
-          
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = `https://colab.research.google.com/notebook#fileId=${url}`;
-          link.target = '_blank';
-          link.click();
-          
-          // Clean up
-          setTimeout(() => URL.revokeObjectURL(url), 1000);
-          
-          this.showMessage(`Script "${fileName}" abierto en Google Colab`, 'success');
-        } catch (error) {
-          this.showMessage(`Error opening script: ${error.message}`, 'error');
-        } finally {
-          this.showLoading(false);
-        }
-      }
 
       async authenticateAdmin() {
         const token = document.getElementById('tokenInput').value.trim();
