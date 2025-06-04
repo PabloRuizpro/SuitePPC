@@ -1,58 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Suite PPC - Gestión inteligente de scripts para PPC con GitHub" />
-  <meta name="author" content="Suite PPC Team" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>Suite PPC - Scripts Inteligentes</title>
-  
-  <!-- Preload fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  
-  <!-- Security headers via meta tags -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-  <meta http-equiv="X-Frame-Options" content="DENY" />
-  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Suite PPC - Gestión de scripts de Python con integración GitHub">
+  <title>Suite PPC - Gestión de Scripts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #0a0f1c;
-      --bg-secondary: #1a1f2e;
-      --surface-primary: #252a3a;
-      --surface-secondary: #2d3748;
-      --surface-hover: #374151;
+      --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary-color: #64748b;
+      --success-color: #10b981;
+      --danger-color: #ef4444;
+      --warning-color: #f59e0b;
+      --background: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #334155;
       --text-primary: #f8fafc;
       --text-secondary: #cbd5e1;
-      --text-muted: #94a3b8;
-      --accent-primary: #3b82f6;
-      --accent-secondary: #1d4ed8;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --border: #374151;
-      --border-hover: #4b5563;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
+      --border: #334155;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --border-radius: 12px;
       --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      --font-mono: 'JetBrains Mono', monospace;
     }
 
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
       color: var(--text-primary);
       line-height: 1.6;
       min-height: 100vh;
@@ -60,122 +45,97 @@
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
       position: relative;
     }
 
-    /* Background effects */
-    .container::before {
+    .header::before {
       content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
-      pointer-events: none;
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 200px;
+      background: var(--gradient);
+      border-radius: 50%;
+      opacity: 0.1;
+      filter: blur(40px);
       z-index: -1;
     }
 
-    /* Header */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 3rem;
-      padding: 2rem;
-      background: rgba(37, 42, 58, 0.8);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .header-content h1 {
-      font-size: clamp(2rem, 4vw, 3rem);
+    .header h1 {
+      font-size: 3rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #60a5fa 0%, #818cf8 50%, #a78bfa 100%);
+      background: var(--gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 0.5rem;
-      letter-spacing: -0.025em;
     }
 
-    .header-content p {
+    .header p {
       color: var(--text-secondary);
-      font-size: 1.125rem;
-      font-weight: 400;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
-    .status {
+    .admin-bar {
       display: flex;
-      align-items: center;
+      justify-content: flex-end;
       gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
     }
 
     .status-indicator {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1.25rem;
-      background: var(--surface-primary);
+      gap: 0.5rem;
+      background: var(--surface);
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
       border: 1px solid var(--border);
-      border-radius: var(--radius-md);
       font-size: 0.875rem;
-      font-weight: 500;
-      transition: var(--transition);
     }
 
     .status-dot {
-      width: 12px;
-      height: 12px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: var(--danger);
-      position: relative;
-      transition: var(--transition);
-    }
-
-    .status-dot::after {
-      content: '';
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: inherit;
-      opacity: 0.3;
+      background: var(--danger-color);
       animation: pulse 2s infinite;
     }
 
     .status-dot.authenticated {
-      background: var(--success);
+      background: var(--success-color);
     }
 
     @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.3; }
-      50% { transform: scale(1.1); opacity: 0.1; }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
 
-    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--border-radius);
       font-size: 0.875rem;
       font-weight: 500;
-      border: none;
-      border-radius: var(--radius-md);
       cursor: pointer;
       transition: var(--transition);
       text-decoration: none;
-      white-space: nowrap;
       position: relative;
       overflow: hidden;
     }
@@ -187,8 +147,8 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      transition: left 0.5s ease;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s;
     }
 
     .btn:hover::before {
@@ -196,602 +156,891 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      background: var(--primary-color);
       color: white;
     }
 
     .btn-primary:hover {
-      background: linear-gradient(135deg, var(--accent-secondary), #1e40af);
+      background: var(--primary-hover);
       transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
     }
 
     .btn-secondary {
-      background: var(--surface-primary);
+      background: var(--surface);
       color: var(--text-primary);
       border: 1px solid var(--border);
     }
 
     .btn-secondary:hover {
       background: var(--surface-hover);
-      border-color: var(--border-hover);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
 
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none !important;
+    .btn-success {
+      background: var(--success-color);
+      color: white;
     }
 
-    /* Loading spinner */
-    .spinner {
-      width: 24px;
-      height: 24px;
-      border: 3px solid var(--border);
-      border-top-color: var(--accent-primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-2px);
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Messages */
-    .message {
-      padding: 1rem 1.5rem;
-      border-radius: var(--radius-md);
-      margin: 1.5rem 0;
-      border: 1px solid;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-weight: 500;
+    .form-container {
+      background: var(--surface);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: none;
       animation: slideIn 0.3s ease-out;
     }
 
+    .form-container.show {
+      display: block;
+    }
+
     @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .message.success {
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--success);
-      border-color: var(--success);
+    .form-group {
+      margin-bottom: 1.5rem;
     }
 
-    .message.error {
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--danger);
-      border-color: var(--danger);
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-primary);
     }
 
-    .message.warning {
-      background: rgba(245, 158, 11, 0.1);
-      color: var(--warning);
-      border-color: var(--warning);
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--border-radius);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      transition: var(--transition);
     }
 
-    /* Grid */
-    .grid {
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .categories-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 2rem;
       margin-top: 2rem;
     }
 
-    /* Cards */
-    .card {
-      background: rgba(37, 42, 58, 0.8);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+    .category-section {
+      background: var(--surface);
+      border-radius: var(--border-radius);
       padding: 2rem;
-      transition: var(--transition);
+      border: 1px solid var(--border);
       box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
+      transition: var(--transition);
     }
 
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-    }
-
-    .card:hover {
+    .category-section:hover {
       transform: translateY(-4px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      border-color: var(--border-hover);
+      box-shadow: var(--shadow-lg);
     }
 
-    .card:hover::before {
-      transform: scaleX(1);
+    .category-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
     }
 
-    .card-header {
+    .category-title {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .card-header h2 {
       font-size: 1.25rem;
       font-weight: 600;
       color: var(--text-primary);
     }
 
-    .card-icon {
+    .category-icon {
       font-size: 1.5rem;
-      opacity: 0.8;
     }
 
-    .scripts-container {
-      display: flex;
-      flex-direction: column;
+    .script-count {
+      background: var(--primary-color);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .scripts-list {
+      display: grid;
       gap: 1rem;
     }
 
     .script-item {
-      background: var(--bg-primary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 1.25rem;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background: var(--background);
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .script-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary-color);
+      transform: scaleY(0);
       transition: var(--transition);
     }
 
     .script-item:hover {
-      background: var(--surface-primary);
-      border-color: var(--border-hover);
+      background: var(--surface-hover);
+      transform: translateX(8px);
+    }
+
+    .script-item:hover::before {
+      transform: scaleY(1);
     }
 
     .script-info {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      flex: 1;
+    }
+
+    .script-icon {
+      font-size: 1.25rem;
+      opacity: 0.7;
     }
 
     .script-name {
       font-weight: 500;
-      font-family: var(--font-mono);
       color: var(--text-primary);
-      font-size: 0.875rem;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      color: var(--text-secondary);
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--border);
+      border-top: 2px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error-message {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--danger-color);
+      color: var(--danger-color);
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin: 1rem 0;
+    }
+
+    .success-message {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--success-color);
+      color: var(--success-color);
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin: 1rem 0;
     }
 
     .empty-state {
       text-align: center;
-      padding: 2rem;
-      color: var(--text-muted);
+      padding: 3rem;
+      color: var(--text-secondary);
     }
 
     .empty-state-icon {
       font-size: 3rem;
       margin-bottom: 1rem;
-      opacity: 0.5;
+      opacity: 0.3;
     }
 
-    /* Responsive design */
     @media (max-width: 768px) {
       .container {
         padding: 1rem;
       }
       
-      .header {
-        flex-direction: column;
-        gap: 1.5rem;
-        text-align: center;
+      .header h1 {
+        font-size: 2rem;
       }
       
-      .status {
+      .admin-bar {
         justify-content: center;
-      }
-      
-      .grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-      
-      .card {
-        padding: 1.5rem;
       }
       
       .script-item {
         flex-direction: column;
+        align-items: flex-start;
         gap: 1rem;
-        align-items: stretch;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
       }
     }
 
-    /* Accessibility improvements */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    /* Focus styles */
-    .btn:focus-visible,
-    .status-indicator:focus-visible {
-      outline: 2px solid var(--accent-primary);
-      outline-offset: 2px;
-    }
-
-    /* Loading states */
-    .loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 3rem;
-    }
-
-    .loading-text {
-      margin-left: 1rem;
+    /* Security indicator */
+    .security-badge {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--border-radius);
+      padding: 0.5rem;
+      font-size: 0.75rem;
       color: var(--text-secondary);
+      z-index: 1000;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <div class="header-content">
-        <h1>Suite PPC</h1>
-        <p>Gestión inteligente de scripts para PPC con integración GitHub</p>
-      </div>
-      
-      <div class="status">
-        <div class="status-indicator">
-          <div class="status-dot" id="statusDot" aria-hidden="true"></div>
-          <span id="authText">Desconectado</span>
-        </div>
-        <button class="btn btn-primary" onclick="handleAuthentication()" id="authBtn">
-          🔐 Conectar GitHub
-        </button>
-      </div>
+      <h1>Suite PPC</h1>
+      <p>Gestión inteligente de scripts de Python con integración completa de GitHub</p>
     </header>
 
-    <div id="messageContainer" role="alert" aria-live="polite"></div>
-    
-    <main>
-      <div id="categoriesContainer" class="grid"></div>
-    </main>
+    <div class="admin-bar">
+      <div class="status-indicator">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Desconectado</span>
+      </div>
+      <button class="btn btn-secondary" onclick="toggleAdminLogin()" id="loginBtn">
+        🔐 Iniciar sesión
+      </button>
+      <button class="btn btn-primary" onclick="toggleNewScriptForm()" id="newScriptBtn">
+        ➕ Nuevo Script
+      </button>
+    </div>
+
+    <div class="form-container" id="loginForm">
+      <h3>🔐 Autenticación de Administrador</h3>
+      <div class="form-group">
+        <label class="form-label">GitHub Personal Access Token:</label>
+        <input type="password" class="form-input" id="tokenInput" placeholder="ghp_...">
+        <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block;">
+          Necesario para crear y modificar scripts. <a href="https://github.com/settings/tokens" target="_blank" style="color: var(--primary-color);">Generar token</a>
+        </small>
+      </div>
+      <button class="btn btn-success" onclick="authenticateAdmin()">
+        ✅ Autenticar
+      </button>
+    </div>
+
+    <div class="form-container" id="newScriptForm">
+      <h3>➕ Crear Nuevo Script</h3>
+      <div class="form-group">
+        <label class="form-label">Nombre del archivo:</label>
+        <input type="text" class="form-input" id="scriptName" placeholder="mi_script.py">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Categoría:</label>
+        <select class="form-select" id="scriptCategory">
+          <option value="">Seleccionar categoría...</option>
+          <option value="__nueva__">➕ Crear nueva categoría</option>
+        </select>
+      </div>
+      
+      <div class="form-group" id="newCategoryGroup" style="display: none;">
+        <label class="form-label">Nueva categoría:</label>
+        <input type="text" class="form-input" id="newCategoryName" placeholder="nombre_categoria">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Código Python:</label>
+        <textarea class="form-textarea" id="scriptCode" rows="10" placeholder="# Escribe tu código aquí
+print('¡Hola mundo!')"></textarea>
+      </div>
+      
+      <button class="btn btn-success" onclick="createScript()">
+        📤 Crear Script
+      </button>
+    </div>
+
+    <div id="messagesContainer"></div>
+    <div id="categoriesContainer" class="categories-grid"></div>
+  </div>
+
+  <div class="security-badge">
+    🔒 Conexión segura HTTPS
   </div>
 
   <script>
-    // Configuration
-    const CONFIG = {
-      GITHUB_USER: 'pabloruizpro',
-      GITHUB_REPO: 'SuitePPC',
-      BRANCH: 'principal',
-      API_BASE: 'https://api.github.com/repos',
-      COLAB_BASE: 'https://colab.research.google.com/github'
-    };
+    class SuitePPC {
+      constructor() {
+        this.config = {
+          owner: 'pabloruizpro',
+          repo: 'SuitePPC',
+          branch: 'principal',
+          apiBase: 'https://api.github.com'
+        };
+        
+        this.state = {
+          token: null,
+          categories: [],
+          isAuthenticated: false,
+          isLoading: false
+        };
 
-    // State management
-    const state = {
-      token: null,
-      isAuthenticated: false,
-      isLoading: false,
-      categories: []
-    };
+        this.cache = new Map();
+        this.rateLimitRemaining = 60;
+        this.rateLimitReset = Date.now();
+        
+        this.init();
+      }
 
-    // DOM elements
-    const elements = {
-      statusDot: document.getElementById('statusDot'),
-      authText: document.getElementById('authText'),
-      authBtn: document.getElementById('authBtn'),
-      messageContainer: document.getElementById('messageContainer'),
-      categoriesContainer: document.getElementById('categoriesContainer')
-    };
+      init() {
+        this.updateUI();
+        this.loadCategories();
+        this.setupEventListeners();
+      }
 
-    // Utility functions
-    function sanitizeInput(input) {
-      return input.trim().replace(/[<>'"]/g, '');
-    }
+      setupEventListeners() {
+        document.getElementById('scriptCategory').addEventListener('change', (e) => {
+          const newCategoryGroup = document.getElementById('newCategoryGroup');
+          newCategoryGroup.style.display = e.target.value === '__nueva__' ? 'block' : 'none';
+        });
 
-    function validateGitHubToken(token) {
-      const tokenPattern = /^(ghp_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9_]{82})$/;
-      return tokenPattern.test(token);
-    }
+        // Input validation
+        document.getElementById('scriptName').addEventListener('input', (e) => {
+          let value = e.target.value;
+          if (value && !value.endsWith('.py')) {
+            value += '.py';
+          }
+          e.target.value = value;
+        });
+      }
 
-    function showMessage(message, type = 'error') {
-      const icons = {
-        success: '✅',
-        error: '❌',
-        warning: '⚠️'
-      };
+      async makeRequest(url, options = {}) {
+        try {
+          // Check rate limit
+          if (this.rateLimitRemaining <= 1 && Date.now() < this.rateLimitReset) {
+            throw new Error('Rate limit exceeded. Please wait before making more requests.');
+          }
 
-      const messageElement = document.createElement('div');
-      messageElement.className = `message ${type}`;
-      messageElement.innerHTML = `
-        <span aria-hidden="true">${icons[type] || '📢'}</span>
-        <span>${message}</span>
-      `;
+          const headers = {
+            'Accept': 'application/vnd.github.v3+json',
+            'User-Agent': 'SuitePPC/1.0',
+            ...options.headers
+          };
 
-      elements.messageContainer.innerHTML = '';
-      elements.messageContainer.appendChild(messageElement);
+          if (this.state.token) {
+            headers['Authorization'] = `Bearer ${this.state.token}`;
+          }
 
-      // Auto-hide after 5 seconds
-      setTimeout(() => {
-        if (elements.messageContainer.contains(messageElement)) {
-          messageElement.style.animation = 'slideOut 0.3s ease-in forwards';
-          setTimeout(() => {
-            if (elements.messageContainer.contains(messageElement)) {
-              elements.messageContainer.removeChild(messageElement);
-            }
-          }, 300);
+          const response = await fetch(url, {
+            ...options,
+            headers
+          });
+
+          // Update rate limit info
+          this.rateLimitRemaining = parseInt(response.headers.get('X-RateLimit-Remaining') || '60');
+          this.rateLimitReset = parseInt(response.headers.get('X-RateLimit-Reset') || '0') * 1000;
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          return await response.json();
+        } catch (error) {
+          console.error('API Request failed:', error);
+          throw error;
         }
-      }, 5000);
-    }
-
-    function updateAuthStatus(isAuthenticated) {
-      state.isAuthenticated = isAuthenticated;
-      
-      if (isAuthenticated) {
-        elements.statusDot.classList.add('authenticated');
-        elements.authText.textContent = 'Conectado';
-        elements.authBtn.innerHTML = '🔄 Recargar Scripts';
-        elements.authBtn.onclick = () => fetchCategories();
-        showMessage('Autenticación exitosa con GitHub', 'success');
-      } else {
-        elements.statusDot.classList.remove('authenticated');
-        elements.authText.textContent = 'Desconectado';
-        elements.authBtn.innerHTML = '🔐 Conectar GitHub';
-        elements.authBtn.onclick = () => handleAuthentication();
-      }
-    }
-
-    function setLoadingState(isLoading) {
-      state.isLoading = isLoading;
-      elements.authBtn.disabled = isLoading;
-      
-      if (isLoading) {
-        elements.categoriesContainer.innerHTML = `
-          <div class="loading">
-            <div class="spinner"></div>
-            <span class="loading-text">Cargando scripts...</span>
-          </div>
-        `;
-      }
-    }
-
-    // Authentication
-    async function handleAuthentication() {
-      try {
-        const input = prompt("🔐 Introduce tu token de GitHub Personal Access Token:\n\n• Debe comenzar con 'ghp_' o 'github_pat_'\n• Asegúrate de que tenga permisos de lectura de repositorios");
-        
-        if (!input) return;
-        
-        const sanitizedToken = sanitizeInput(input);
-        
-        if (!validateGitHubToken(sanitizedToken)) {
-          throw new Error('Token de GitHub inválido. Debe comenzar con "ghp_" o "github_pat_" y tener el formato correcto.');
-        }
-
-        // Test token validity
-        setLoadingState(true);
-        await testGitHubConnection(sanitizedToken);
-        
-        state.token = sanitizedToken;
-        updateAuthStatus(true);
-        await fetchCategories();
-        
-      } catch (error) {
-        console.error('Authentication error:', error);
-        showMessage(error.message || 'Error de autenticación', 'error');
-        updateAuthStatus(false);
-      } finally {
-        setLoadingState(false);
-      }
-    }
-
-    // GitHub API functions
-    async function testGitHubConnection(token) {
-      const response = await fetchFromGitHub(
-        `${CONFIG.API_BASE}/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}`,
-        token
-      );
-      
-      if (!response.ok) {
-        throw new Error(`No se pudo acceder al repositorio: ${response.status}`);
-      }
-      
-      return response.json();
-    }
-
-    async function fetchFromGitHub(url, token = state.token) {
-      const headers = {
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'Suite-PPC-App/1.0'
-      };
-
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch(url, {
-        method: 'GET',
-        headers,
-        mode: 'cors'
-      });
-
-      if (!response.ok) {
-        throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
-      }
-
-      return response;
-    }
-
-    async function fetchCategories() {
-      if (!state.isAuthenticated) {
-        showMessage('Debes autenticarte primero', 'warning');
-        return;
-      }
-
-      try {
-        setLoadingState(true);
-        
-        const scriptsUrl = `${CONFIG.API_BASE}/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}/contents/scripts`;
-        const response = await fetchFromGitHub(scriptsUrl);
-        const folders = await response.json();
-        
-        // Filter directories only
-        const directories = folders.filter(item => item.type === 'directory');
-        
-        // Fetch scripts for each directory
-        const categoriesData = await Promise.all(
-          directories.map(async (dir) => {
-            try {
-              const dirResponse = await fetchFromGitHub(`${scriptsUrl}/${dir.name}`);
-              const items = await dirResponse.json();
-              
-              return {
-                name: dir.name,
-                scripts: items.filter(item => 
-                  item.type === 'file' && 
-                  item.name.endsWith('.py') &&
-                  item.download_url
-                )
-              };
-            } catch (error) {
-              console.error(`Error fetching scripts for ${dir.name}:`, error);
-              return {
-                name: dir.name,
-                scripts: []
-              };
-            }
-          })
-        );
-
-        state.categories = categoriesData;
-        renderCategories(categoriesData);
-        
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-        showMessage('Error al cargar las categorías de scripts', 'error');
-      } finally {
-        setLoadingState(false);
-      }
-    }
-
-    function renderCategories(categories) {
-      if (!categories || categories.length === 0) {
-        elements.categoriesContainer.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">📁</div>
-            <h3>No hay categorías disponibles</h3>
-            <p>Verifica tu conexión y permisos del repositorio</p>
-          </div>
-        `;
-        return;
-      }
-
-      const categoriesHTML = categories.map(category => `
-        <div class="card">
-          <div class="card-header">
-            <span class="card-icon">📁</span>
-            <h2>${escapeHtml(category.name)}</h2>
-            <span class="sr-only">${category.scripts.length} scripts disponibles</span>
-          </div>
+      async loadCategories() {
+        this.showLoading(true);
+        try {
+          const cacheKey = 'categories';
+          const cached = this.cache.get(cacheKey);
           
-          <div class="scripts-container">
-            ${category.scripts.length === 0 
-              ? `<div class="empty-state">
-                   <div class="empty-state-icon">🐍</div>
-                   <p>No hay scripts Python en esta categoría</p>
-                 </div>`
-              : category.scripts.map(script => `
-                  <div class="script-item">
-                    <div class="script-info">
-                      <span class="card-icon">🐍</span>
-                      <span class="script-name">${escapeHtml(script.name)}</span>
-                    </div>
-                    <button 
-                      class="btn btn-secondary" 
-                      onclick="openInColab('${escapeHtml(script.name)}', '${escapeHtml(category.name)}')"
-                      title="Abrir ${escapeHtml(script.name)} en Google Colab"
-                    >
-                      🚀 Abrir en Colab
-                    </button>
-                  </div>
-                `).join('')
-            }
-          </div>
-        </div>
-      `).join('');
+          if (cached && Date.now() - cached.timestamp < 60000) {
+            this.state.categories = cached.data;
+            this.renderCategories();
+            return;
+          }
 
-      elements.categoriesContainer.innerHTML = categoriesHTML;
-    }
+          const url = `${this.config.apiBase}/repos/${this.config.owner}/${this.config.repo}/contents/scripts`;
+          const contents = await this.makeRequest(url);
+          
+          const categories = contents
+            .filter(item => item.type === 'dir')
+            .map(item => item.name);
 
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
+          this.state.categories = categories;
+          this.cache.set(cacheKey, { data: categories, timestamp: Date.now() });
+          
+          await this.loadScriptsForCategories();
+          this.updateCategorySelect();
+          this.renderCategories();
+        } catch (error) {
+          this.showMessage(`Error loading categories: ${error.message}`, 'error');
+        } finally {
+          this.showLoading(false);
+        }
+      }
 
-    // Colab integration
-    function openInColab(scriptName, categoryName) {
-      try {
-        const colabUrl = `${CONFIG.COLAB_BASE}/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}/blob/${CONFIG.BRANCH}/scripts/${encodeURIComponent(categoryName)}/${encodeURIComponent(scriptName)}`;
+      async loadScriptsForCategories() {
+        const scriptsPromises = this.state.categories.map(async (category) => {
+          try {
+            const url = `${this.config.apiBase}/repos/${this.config.owner}/${this.config.repo}/contents/scripts/${category}`;
+            const scripts = await this.makeRequest(url);
+            return {
+              category,
+              scripts: scripts.filter(item => item.type === 'file' && item.name.endsWith('.py'))
+            };
+          } catch (error) {
+            console.warn(`Failed to load scripts for category ${category}:`, error);
+            return { category, scripts: [] };
+          }
+        });
+
+        this.categoryScripts = await Promise.all(scriptsPromises);
+      }
+
+      updateCategorySelect() {
+        const select = document.getElementById('scriptCategory');
+        const currentValue = select.value;
         
-        // Open in new tab
-        const newWindow = window.open(colabUrl, '_blank', 'noopener,noreferrer');
-        
-        if (!newWindow) {
-          throw new Error('El navegador bloqueó la ventana emergente. Por favor, permite ventanas emergentes para este sitio.');
+        // Clear existing options except first two
+        while (select.options.length > 2) {
+          select.removeChild(select.lastChild);
         }
         
-        showMessage(`Abriendo ${scriptName} en Google Colab...`, 'success');
+        // Add category options
+        this.state.categories.forEach(category => {
+          const option = document.createElement('option');
+          option.value = category;
+          option.textContent = `📁 ${category}`;
+          select.appendChild(option);
+        });
         
-      } catch (error) {
-        console.error('Error opening Colab:', error);
-        showMessage(error.message || 'Error al abrir el script en Colab', 'error');
+        // Restore selection if possible
+        if (currentValue && [...select.options].some(opt => opt.value === currentValue)) {
+          select.value = currentValue;
+        }
+      }
+
+      renderCategories() {
+        const container = document.getElementById('categoriesContainer');
+        
+        if (!this.categoryScripts || this.categoryScripts.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">📁</div>
+              <p>No se encontraron categorías de scripts</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = this.categoryScripts.map(({ category, scripts }) => `
+          <div class="category-section">
+            <div class="category-header">
+              <div class="category-title">
+                <span class="category-icon">📁</span>
+                <span>${category}</span>
+              </div>
+              <span class="script-count">${scripts.length}</span>
+            </div>
+            <div class="scripts-list">
+              ${scripts.length > 0 ? scripts.map(script => `
+                <div class="script-item">
+                  <div class="script-info">
+                    <span class="script-icon">🐍</span>
+                    <span class="script-name">${script.name}</span>
+                  </div>
+                  <button class="btn btn-primary" onclick="app.openInColab('${script.download_url}', '${script.name}')">
+                    🚀 Abrir en Colab
+                  </button>
+                </div>
+              `).join('') : `
+                <div class="empty-state">
+                  <p style="margin: 0; font-size: 0.875rem;">No hay scripts en esta categoría</p>
+                </div>
+              `}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      async openInColab(downloadUrl, fileName) {
+        try {
+          this.showLoading(true);
+          const response = await fetch(downloadUrl);
+          const code = await response.text();
+
+          const notebook = {
+            nbformat: 4,
+            nbformat_minor: 0,
+            metadata: {
+              colab: {
+                name: fileName,
+                provenance: []
+              },
+              kernelspec: {
+                name: "python3",
+                display_name: "Python 3"
+              }
+            },
+            cells: [{
+              cell_type: "code",
+              metadata: {},
+              source: code.split('\n'),
+              outputs: [],
+              execution_count: null
+            }]
+          };
+
+          const blob = new Blob([JSON.stringify(notebook, null, 2)], { 
+            type: 'application/json' 
+          });
+          
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = `https://colab.research.google.com/notebook#fileId=${url}`;
+          link.target = '_blank';
+          link.click();
+          
+          // Clean up
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          
+          this.showMessage(`Script "${fileName}" abierto en Google Colab`, 'success');
+        } catch (error) {
+          this.showMessage(`Error opening script: ${error.message}`, 'error');
+        } finally {
+          this.showLoading(false);
+        }
+      }
+
+      async authenticateAdmin() {
+        const token = document.getElementById('tokenInput').value.trim();
+        
+        if (!token) {
+          this.showMessage('Please enter a GitHub token', 'error');
+          return;
+        }
+
+        if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
+          this.showMessage('Invalid token format. GitHub tokens should start with "ghp_" or "github_pat_"', 'error');
+          return;
+        }
+
+        try {
+          this.showLoading(true);
+          
+          // Test token by making a simple API call
+          const testUrl = `${this.config.apiBase}/user`;
+          await this.makeRequest(testUrl, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          this.state.token = token;
+          this.state.isAuthenticated = true;
+          this.updateUI();
+          this.toggleForm('loginForm', false);
+          
+          this.showMessage('Successfully authenticated as admin', 'success');
+          
+          // Clear the input for security
+          document.getElementById('tokenInput').value = '';
+        } catch (error) {
+          this.showMessage(`Authentication failed: ${error.message}`, 'error');
+        } finally {
+          this.showLoading(false);
+        }
+      }
+
+      async createScript() {
+        if (!this.state.isAuthenticated) {
+          this.showMessage('Please authenticate first', 'error');
+          return;
+        }
+
+        const name = document.getElementById('scriptName').value.trim();
+        const code = document.getElementById('scriptCode').value.trim();
+        let category = document.getElementById('scriptCategory').value;
+
+        if (!name) {
+          this.showMessage('Please enter a script name', 'error');
+          return;
+        }
+
+        if (!name.endsWith('.py')) {
+          this.showMessage('Script name must end with .py', 'error');
+          return;
+        }
+
+        if (!code) {
+          this.showMessage('Please enter some code', 'error');
+          return;
+        }
+
+        if (category === '__nueva__') {
+          const newCategory = document.getElementById('newCategoryName').value.trim();
+          if (!newCategory) {
+            this.showMessage('Please enter a new category name', 'error');
+            return;
+          }
+          category = newCategory;
+        }
+
+        if (!category) {
+          this.showMessage('Please select or create a category', 'error');
+          return;
+        }
+
+        try {
+          this.showLoading(true);
+          
+          const path = `scripts/${category}/${name}`;
+          const url = `${this.config.apiBase}/repos/${this.config.owner}/${this.config.repo}/contents/${path}`;
+          
+          const content = btoa(unescape(encodeURIComponent(code)));
+          
+          await this.makeRequest(url, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: `Add new script: ${name}`,
+              content: content,
+              branch: this.config.branch
+            })
+          });
+
+          this.showMessage(`Script "${name}" created successfully`, 'success');
+          
+          // Reset form
+          document.getElementById('scriptName').value = '';
+          document.getElementById('scriptCode').value = '';
+          document.getElementById('scriptCategory').value = '';
+          document.getElementById('newCategoryName').value = '';
+          document.getElementById('newCategoryGroup').style.display = 'none';
+          
+          this.toggleForm('newScriptForm', false);
+          
+          // Refresh categories
+          this.cache.clear();
+          await this.loadCategories();
+          
+        } catch (error) {
+          this.showMessage(`Error creating script: ${error.message}`, 'error');
+        } finally {
+          this.showLoading(false);
+        }
+      }
+
+      toggleForm(formId, show = null) {
+        const form = document.getElementById(formId);
+        const isVisible = form.classList.contains('show');
+        
+        if (show === null) {
+          show = !isVisible;
+        }
+        
+        if (show) {
+          form.classList.add('show');
+        } else {
+          form.classList.remove('show');
+        }
+      }
+
+      updateUI() {
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const loginBtn = document.getElementById('loginBtn');
+
+        if (this.state.isAuthenticated) {
+          statusDot.classList.add('authenticated');
+          statusText.textContent = 'Autenticado';
+          loginBtn.innerHTML = '🚪 Cerrar sesión';
+          loginBtn.onclick = () => this.logout();
+        } else {
+          statusDot.classList.remove('authenticated');
+          statusText.textContent = 'Desconectado';
+          loginBtn.innerHTML = '🔐 Iniciar sesión';
+          loginBtn.onclick = () => this.toggleAdminLogin();
+        }
+      }
+
+      logout() {
+        this.state.token = null;
+        this.state.isAuthenticated = false;
+        this.updateUI();
+        this.toggleForm('loginForm', false);
+        this.toggleForm('newScriptForm', false);
+        this.showMessage('Logged out successfully', 'success');
+      }
+
+      toggleAdminLogin() {
+        this.toggleForm('loginForm');
+      }
+
+      toggleNewScriptForm() {
+        if (!this.state.isAuthenticated) {
+          this.showMessage('Please authenticate first', 'error');
+          this.toggleForm('loginForm', true);
+          return;
+        }
+        this.toggleForm('newScriptForm');
+      }
+
+      showMessage(message, type = 'info') {
+        const container = document.getElementById('messagesContainer');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `${type}-message`;
+        messageDiv.textContent = message;
+        
+        container.appendChild(messageDiv);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+          if (messageDiv.parentNode) {
+            messageDiv.parentNode.removeChild(messageDiv);
+          }
+        }, 5000);
+      }
+
+      showLoading(show) {
+        this.state.isLoading = show;
+        const container = document.getElementById('categoriesContainer');
+        
+        if (show) {
+          container.innerHTML = `
+            <div class="loading">
+              <div class="spinner"></div>
+              <span>Cargando...</span>
+            </div>
+          `;
+        }
+      }
+
+      // Security helper to sanitize input
+      sanitizeInput(input) {
+        const div = document.createElement('div');
+        div.textContent = input;
+        return div.innerHTML;
+      }
+
+      // Validate GitHub token format
+      isValidGitHubToken(token) {
+        return /^(ghp_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9_]{82})$/.test(token);
+      }
+
+      // Rate limiting helper
+      async waitForRateLimit() {
+        if (this.rateLimitRemaining <= 1 && Date.now() < this.rateLimitReset) {
+          const waitTime = this.rateLimitReset - Date.now();
+          this.showMessage(`Rate limit reached. Waiting ${Math.ceil(waitTime / 1000)} seconds...`, 'warning');
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
       }
     }
 
-    // Error handling
-    window.addEventListener('error', (event) => {
-      console.error('Global error:', event.error);
-      showMessage('Ha ocurrido un error inesperado', 'error');
+    // Global app instance
+    let app;
+
+    // Initialize app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      app = new SuitePPC();
     });
 
+    // Global functions for backward compatibility and HTML onclick handlers
+    function toggleAdminLogin() {
+      app.toggleAdminLogin();
+    }
+
+    function toggleNewScriptForm() {
+      app.toggleNewScriptForm();
+    }
+
+    function authenticateAdmin() {
+      app.authenticateAdmin();
+    }
+
+    function createScript() {
+      app.createScript();
+    }
+
+    // Service Worker for caching (optional enhancement)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(console.error);
+    }
+
+    // Error handling for unhandled promises
     window.addEventListener('unhandledrejection', (event) => {
       console.error('Unhandled promise rejection:', event.reason);
-      showMessage('Error de conexión o procesamiento', 'error');
-    });
-
-    // Initialize app
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('Suite PPC inicializado correctamente');
-    });
-
-    // Add CSS for slide out animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideOut {
-        from { opacity: 1; transform: translateY(0); }
-        to { opacity: 0; transform: translateY(-10px); }
+      if (app) {
+        app.showMessage('An unexpected error occurred', 'error');
       }
-    `;
-    document.head.appendChild(style);
+    });
+
+    // Security: Prevent clickjacking
+    if (window.self !== window.top) {
+      window.top.location = window.self.location;
+    }
   </script>
 </body>
 </html>
+  
