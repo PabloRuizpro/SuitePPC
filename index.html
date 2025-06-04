@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Suite PPC</title>
   <style>
     body { font-family: sans-serif; background: #f9f9f9; padding: 20px; }
@@ -24,20 +24,49 @@
       cursor: pointer;
     }
     button:hover { background: #0056b3; }
+    #nuevoForm { background: #fff; padding: 15px; margin-top: 30px; border-radius: 5px; }
+    textarea, input, select { width: 100%; margin: 5px 0 15px; padding: 8px; }
+    #adminBar { text-align: right; margin-top: 10px; }
   </style>
 </head>
 <body>
   <h1>Suite PPC</h1>
+
+  <div id="adminBar">
+    <button onclick="iniciarSesionAdmin()">🔐 Iniciar sesión como admin</button>
+    <button onclick="mostrarFormularioNuevoScript()">➕ Nuevo Script</button>
+  </div>
+
+  <div id="nuevoForm" style="display:none">
+    <h3>Nuevo Script</h3>
+    <label>Nombre del archivo (con .py):</label>
+    <input id="nuevoNombre" />
+
+    <label>Carpeta destino:</label>
+    <select id="nuevaCategoria">
+      <option value="automatizados">automatizados</option>
+      <option value="manuales">manuales</option>
+      <option value="__nueva__">-- Crear nueva carpeta --</option>
+    </select>
+    <input id="nuevaCategoriaPersonalizada" placeholder="Nombre nueva carpeta..." style="display:none" />
+
+    <label>Código:</label>
+    <textarea id="nuevoCodigo" rows="6">print('Hola mundo')</textarea>
+    <button onclick="crearNuevoScript()">📤 Subir a GitHub</button>
+  </div>
+
   <div id="contenedor"></div>
 
   <script>
     const OWNER = "pabloruizpro";
     const REPO = "SuitePPC";
-    const BRANCH = "principal"; // O 'main' si usas main
+    const BRANCH = "principal";
     const CATEGORIAS = ["automatizados", "manuales"];
+    let githubToken = null;
 
     async function cargarScripts() {
       const contenedor = document.getElementById("contenedor");
+      contenedor.innerHTML = "";
 
       for (const categoria of CATEGORIAS) {
         const bloque = document.createElement("div");
@@ -99,9 +128,68 @@
       document.body.removeChild(form);
     }
 
+    function iniciarSesionAdmin() {
+      const token = prompt("Introduce tu GitHub Token:");
+      if (token && token.length > 30) {
+        githubToken = token;
+        alert("Sesión iniciada. Ya puedes subir nuevos scripts.");
+      }
+    }
+
+    function mostrarFormularioNuevoScript() {
+      document.getElementById("nuevoForm").style.display = "block";
+    }
+
+    document.getElementById("nuevaCategoria").addEventListener("change", function () {
+      const personalizada = document.getElementById("nuevaCategoriaPersonalizada");
+      personalizada.style.display = this.value === "__nueva__" ? "block" : "none";
+    });
+
+    async function crearNuevoScript() {
+      if (!githubToken) return alert("Primero debes iniciar sesión como admin.");
+
+      const nombre = document.getElementById("nuevoNombre").value.trim();
+      const codigo = document.getElementById("nuevoCodigo").value;
+      let categoria = document.getElementById("nuevaCategoria").value;
+
+      if (categoria === "__nueva__") {
+        categoria = document.getElementById("nuevaCategoriaPersonalizada").value.trim();
+        if (!categoria) return alert("Debes introducir el nombre de la nueva carpeta.");
+        if (!CATEGORIAS.includes(categoria)) CATEGORIAS.push(categoria);
+      }
+
+      const path = `scripts/${categoria}/${nombre}`;
+      const apiURL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
+      const contentEncoded = btoa(unescape(encodeURIComponent(codigo)));
+
+      const body = {
+        message: `Añadir nuevo script: ${nombre}`,
+        content: contentEncoded,
+        branch: BRANCH,
+      };
+
+      const res = await fetch(apiURL, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${githubToken}`,
+          "Accept": "application/vnd.github.v3+json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (res.ok) {
+        alert("Script subido con éxito.");
+        cargarScripts();
+      } else {
+        const json = await res.json();
+        alert("Error: " + json.message);
+      }
+    }
+
     cargarScripts();
   </script>
 </body>
 </html>
+
 
   
