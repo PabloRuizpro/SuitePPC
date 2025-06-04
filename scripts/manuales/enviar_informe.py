@@ -1,1 +1,1 @@
-print("Informe enviado.")
+print("Informe enviado...")
